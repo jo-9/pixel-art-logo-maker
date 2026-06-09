@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Block Logo Editor</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="toolbar">
+        <div class="toolbar-group">
+          <label class="toolbar-label" for="grid-size">Grid</label>
+          <select id="grid-size" class="toolbar-select">
+            <option value="5" selected>5 × 5</option>
+            <option value="8">8 × 8</option>
+            <option value="10">10 × 10</option>
+            <option value="16">16 × 16</option>
+            <option value="custom">Custom…</option>
+          </select>
+          <input
+            id="custom-size"
+            class="toolbar-input custom-size-input"
+            type="number"
+            min="2"
+            max="64"
+            value="12"
+            hidden
+            aria-label="Custom grid size"
+          />
+        </div>
+
+        <div class="toolbar-group tools" role="group" aria-label="Drawing tools">
+          <button type="button" class="tool-btn active" data-tool="draw" title="Draw (white)">Draw</button>
+          <button type="button" class="tool-btn" data-tool="erase" title="Erase (black)">Erase</button>
+        </div>
+
+        <div class="toolbar-group">
+          <div class="regen-split">
+            <button type="button" id="regen-btn" class="action-btn regen-main">Regen</button>
+            <button
+              type="button"
+              id="regen-menu-btn"
+              class="action-btn regen-menu"
+              aria-expanded="false"
+              aria-haspopup="true"
+              aria-controls="regen-menu"
+              title="Seed options"
+            >
+              <span aria-hidden="true">▾</span>
+            </button>
+            <div id="regen-menu" class="regen-dropdown" role="menu" hidden>
+              <p class="regen-dropdown-title">Seed symmetry</p>
+              <label class="regen-option">
+                <input type="checkbox" data-seed-option="none" checked />
+                No symmetry (random fill)
+              </label>
+              <label class="regen-option">
+                <input type="checkbox" data-seed-option="horizontal" checked />
+                Horizontal mirror
+              </label>
+              <label class="regen-option">
+                <input type="checkbox" data-seed-option="vertical" checked />
+                Vertical mirror
+              </label>
+              <label class="regen-option">
+                <input type="checkbox" data-seed-option="diagonal" checked />
+                Diagonal mirror
+              </label>
+              <label class="regen-option">
+                <input type="checkbox" data-seed-option="swirl" checked />
+                Swirl mirror (flip mirrored half)
+              </label>
+              <label class="regen-option">
+                <input type="checkbox" data-seed-option="colorInvert" checked />
+                Color-invert mirror
+              </label>
+            </div>
+          </div>
+          <button type="button" id="clear-btn" class="action-btn">Clear</button>
+          <button type="button" id="invert-btn" class="action-btn">Invert</button>
+          <button type="button" id="export-btn" class="action-btn primary">Export PNG</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="editor-panel" aria-label="Logo grid editor">
+          <div id="grid" class="grid" tabindex="0"></div>
+          <p class="hint">Click or drag to paint · Arrow keys move · Space toggles cell</p>
+        </section>
+
+        <aside class="preview-panel" aria-label="Export preview">
+          <h2 class="preview-title">Export preview</h2>
+          <canvas id="preview" width="512" height="512" class="preview-canvas"></canvas>
+          <p class="preview-meta">512 × 512 · centered · even margins</p>
+        </aside>
+      </main>
+    </div>
+
+    <canvas id="export-canvas" width="512" height="512" hidden></canvas>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
