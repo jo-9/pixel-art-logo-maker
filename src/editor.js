@@ -5,7 +5,6 @@ function cellSizeForGrid(gridSize) {
 export function createEditor(gridEl, { onChange }) {
   let cells = [];
   let gridSize = 5;
-  let tool = "draw";
   let focusR = 0;
   let focusC = 0;
   let isPainting = false;
@@ -151,11 +150,8 @@ export function createEditor(gridEl, { onChange }) {
       focusC = Math.min(focusC, gridSize - 1);
       render();
     },
-    setTool(nextTool) {
-      tool = nextTool;
-    },
     getState() {
-      return { cells, gridSize, tool, focusR, focusC };
+      return { cells, gridSize, focusR, focusC };
     },
   };
 }

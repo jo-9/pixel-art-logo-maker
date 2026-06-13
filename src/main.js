@@ -21,7 +21,6 @@ const seedOptionInputs = [...document.querySelectorAll("[data-seed-option]")];
 const clearBtn = document.getElementById("clear-btn");
 const invertBtn = document.getElementById("invert-btn");
 const exportBtn = document.getElementById("export-btn");
-const toolButtons = [...document.querySelectorAll(".tool-btn")];
 
 let gridSize = PRESET_SIZES[0];
 let seedOptions = { ...DEFAULT_SEED_OPTIONS };
@@ -117,14 +116,6 @@ customSizeInput.addEventListener("keydown", (event) => {
   applyGridSize(readSelectedSize());
 });
 
-toolButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    toolButtons.forEach((btn) => btn.classList.remove("active"));
-    button.classList.add("active");
-    editor.setTool(button.dataset.tool);
-  });
-});
-
 regenBtn.addEventListener("click", regen);
 
 regenMenuBtn.addEventListener("click", (event) => {
@@ -160,5 +151,4 @@ exportBtn.addEventListener("click", () => {
 });
 
 setCells(cells, gridSize);
-editor.setTool("draw");
 gridEl.focus();
