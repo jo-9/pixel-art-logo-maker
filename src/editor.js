@@ -9,15 +9,18 @@ export function createEditor(gridEl, { onChange }) {
   let focusR = 0;
   let focusC = 0;
   let isPainting = false;
+  let strokeValue = null;
 
-  function paintValue() {
-    return tool === "draw";
+  function beginStroke(row, col) {
+    cells[row][col] = !cells[row][col];
+    strokeValue = cells[row][col];
+    updateCellDom(row, col);
+    onChange(cells);
   }
 
-  function applyPaint(row, col) {
-    const value = paintValue();
-    if (cells[row][col] === value) return;
-    cells[row][col] = value;
+  function continueStroke(row, col) {
+    if (strokeValue === null || cells[row][col] === strokeValue) return;
+    cells[row][col] = strokeValue;
     updateCellDom(row, col);
     onChange(cells);
   }
@@ -42,13 +45,13 @@ export function createEditor(gridEl, { onChange }) {
       focusR = row;
       focusC = col;
       isPainting = true;
-      applyPaint(row, col);
+      beginStroke(row, col);
       updateFocusDom();
     });
 
     cell.addEventListener("mouseenter", () => {
       if (!isPainting) return;
-      applyPaint(row, col);
+      continueStroke(row, col);
     });
 
     cell.addEventListener("touchstart", (event) => {
@@ -56,18 +59,19 @@ export function createEditor(gridEl, { onChange }) {
       focusR = row;
       focusC = col;
       isPainting = true;
-      applyPaint(row, col);
+      beginStroke(row, col);
       updateFocusDom();
     }, { passive: false });
 
     cell.addEventListener("touchmove", (event) => {
       event.preventDefault();
+      if (!isPainting) return;
       const touch = event.touches[0];
       const target = document.elementFromPoint(touch.clientX, touch.clientY);
       if (!target || !target.classList.contains("cell")) return;
       const touchRow = Number.parseInt(target.dataset.row, 10);
       const touchCol = Number.parseInt(target.dataset.col, 10);
-      applyPaint(touchRow, touchCol);
+      continueStroke(touchRow, touchCol);
     }, { passive: false });
   }
 
@@ -96,12 +100,14 @@ export function createEditor(gridEl, { onChange }) {
     gridEl.appendChild(fragment);
   }
 
-  window.addEventListener("mouseup", () => {
+  function endStroke() {
     isPainting = false;
-  });
-  window.addEventListener("touchend", () => {
-    isPainting = false;
-  });
+    strokeValue = null;
+  }
+
+  window.addEventListener("mouseup", endStroke);
+  window.addEventListener("touchend", endStroke);
+  window.addEventListener("touchcancel", endStroke);
 
   gridEl.addEventListener("keydown", (event) => {
     const { key } = event;
